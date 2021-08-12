@@ -15,6 +15,7 @@
         <module>healenium-web-selenium</module>
         <module>healenium-web-selenium-rp</module>
         <module>healenium-web-selenoid</module>
+        <module>healenium-web-robot-framework</module>
     </modules>
 
     <properties>
