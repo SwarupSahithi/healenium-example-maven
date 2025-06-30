@@ -1,20 +1,36 @@
-FROM maven:3.9.6-amazoncorretto-17 AS builder
+FROM maven:3.9.6-amazoncorretto-17 as builder
 
+# Set workdir
 WORKDIR /app
 
-# Copy all project files
+# Copy all files
 COPY . .
 
-# Install Chrome and required dependencies
-RUN yum update -y && \
-    yum install -y wget curl unzip xorg-x11-server-Xvfb libXcomposite libXcursor libXdamage libXi libXtst alsa-lib atk cups-libs gtk3 libXScrnSaver \
-        libXrandr GConf2 alsa-plugins-pulseaudio libappindicator-gtk3 libdbusmenu-gtk3 libdbusmenu-glib && \
-    wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm && \
-    yum install -y ./google-chrome-stable_current_x86_64.rpm && \
-    rm -f google-chrome-stable_current_x86_64.rpm
+# Install Google Chrome + dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    gnupg \
+    unzip \
+    fonts-liberation \
+    libappindicator3-1 \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libatk1.0-0 \
+    libcups2 \
+    libdbus-1-3 \
+    libgdk-pixbuf2.0-0 \
+    libnspr4 \
+    libnss3 \
+    libx11-xcb1 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    xdg-utils \
+    --no-install-recommends && \
+    wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    dpkg -i google-chrome-stable_current_amd64.deb || apt-get -fy install && \
+    rm google-chrome-stable_current_amd64.deb
 
-# Set Chrome binary path if needed
-ENV CHROME_BIN=/usr/bin/google-chrome
-
-# Run tests using Maven
+# Run tests (you can skip them for just building with -DskipTests=true)
 RUN mvn clean install -DskipTests=false
