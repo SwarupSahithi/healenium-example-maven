@@ -1,4 +1,5 @@
-FROM maven:3.8.6-openjdk-17 AS builder
+FROM maven:3.8-eclipse-temurin-17 AS builder
+r
 
 # Set work directory
 WORKDIR /app
