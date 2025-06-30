@@ -31,6 +31,5 @@ RUN apt-get update && apt-get install -y \
     wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
     dpkg -i google-chrome-stable_current_amd64.deb || apt-get -fy install && \
     rm google-chrome-stable_current_amd64.deb
-
 # Run tests (you can skip them for just building with -DskipTests=true)
 RUN mvn clean install -DskipTests=false
