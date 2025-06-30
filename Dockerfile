@@ -1,5 +1,5 @@
 FROM maven:3.9.9-java-17-amazon-corretto.x86_64 AS builder
-r
+
 
 # Set work directory
 WORKDIR /app
