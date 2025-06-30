@@ -1,4 +1,4 @@
-FROM maven:3.8-eclipse-temurin-17 AS builder
+FROM maven:3.9.9-java-17-amazon-corretto.x86_64 AS builder
 r
 
 # Set work directory
