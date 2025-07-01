@@ -1,35 +1,23 @@
-FROM maven:3.9.6-amazoncorretto-17 as builder
+# ----------- Stage 1: Build using Maven ------------
+FROM maven:3.9.6-eclipse-temurin-8 AS builder
 
-# Set workdir
+# Set working directory
 WORKDIR /app
 
-# Copy all files
+# Copy everything
 COPY . .
 
-# Install Google Chrome + dependencies
-RUN apt-get update && apt-get install -y \
-    curl \
-    wget \
-    gnupg \
-    unzip \
-    fonts-liberation \
-    libappindicator3-1 \
-    libasound2 \
-    libatk-bridge2.0-0 \
-    libatk1.0-0 \
-    libcups2 \
-    libdbus-1-3 \
-    libgdk-pixbuf2.0-0 \
-    libnspr4 \
-    libnss3 \
-    libx11-xcb1 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxrandr2 \
-    xdg-utils \
-    --no-install-recommends && \
-    wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-    dpkg -i google-chrome-stable_current_amd64.deb || apt-get -fy install && \
-    rm google-chrome-stable_current_amd64.deb
-# Run tests (you can skip them for just building with -DskipTests=true)
-RUN mvn clean install -DskipTests=false
+# Build all modules and skip tests if you want only the build
+RUN mvn clean install -DskipTests
+
+# ----------- Stage 2: Runtime environment ------------
+FROM openjdk:8-jdk-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy test artifacts from builder
+COPY --from=builder /app .
+
+# Run tests automatically on container startup (optional)
+CMD ["mvn", "test"]
