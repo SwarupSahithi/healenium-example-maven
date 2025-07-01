@@ -1,19 +1,22 @@
-# -------- Stage 1: Build & Test ----------
 FROM maven:3.9.6-eclipse-temurin-8 AS builder
 
+# Set working directory
 WORKDIR /app
+
+# Copy everything
 COPY . .
 
-# Build + run tests during build (recommended for CI)
-RUN mvn clean install
+# Build all modules and skip tests if you want only the build
+RUN mvn clean install -DskipTests
 
-# -------- Stage 2: Runtime only ----------
+# ----------- Stage 2: Runtime environment ------------
 FROM openjdk:8-jdk-slim
 
+# Set working directory
 WORKDIR /app
 
-# Copy compiled code/artifacts from builder
+# Copy test artifacts from builder
 COPY --from=builder /app .
 
-# Use a lightweight startup command, e.g., tail to keep container running
-CMD ["tail", "-f", "/dev/null"]
+# Run tests automatically on container startup (optional)
+CMD ["mvn", "test"]
