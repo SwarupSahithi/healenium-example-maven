@@ -19,4 +19,4 @@ WORKDIR /app
 COPY --from=builder /app .
 
 # Run tests automatically on container startup (optional)
-CMD ["mvn", "test"]
+CMD ["test"]
