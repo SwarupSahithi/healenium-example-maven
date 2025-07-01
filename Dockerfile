@@ -37,4 +37,5 @@ ENV DISPLAY=:99
 COPY . .
 
 # Build and run tests in headless-chrome profile
-RUN mvn clean test -Pheadless-chrome
+RUN mvn clean test
+
